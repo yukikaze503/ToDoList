@@ -28,11 +28,9 @@ class TodosController < ApplicationController
     build_todo
     respond_to do |format|
       if @todo.save
-        format.html { redirect_to todo_path, notice: 'Todo was successfully created.' }
-        format.json { render :show, status: :created, location: @todo }
+        format.html { redirect_to todos_path, notice: 'Todo was successfully created.' }
       else
         format.html { render :index }
-        format.json { render json: @todo.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -43,11 +41,9 @@ class TodosController < ApplicationController
     build_todo
     respond_to do |format|
       if @todo.update(todo_params)
-        format.html { redirect_to todo_path, notice: 'Todo was successfully updated.' }
-        format.json { render :show, status: :ok, location: @todo }
+        format.html { redirect_to todos_path, notice: 'Todo was successfully updated.' }
       else
         format.html { render :edit }
-        format.json { render json: @todo.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -58,7 +54,6 @@ class TodosController < ApplicationController
     @todo.destroy
     respond_to do |format|
       format.html { redirect_to todos_url, notice: 'Todo was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -66,7 +61,7 @@ class TodosController < ApplicationController
     def load_todo
       @todo ||= todo_scope.find(params[:id])
     end
-    
+
     def build_todo
       @todo ||= todo_scope.new
       @todo.attributes = todo_params

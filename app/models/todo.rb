@@ -1,3 +1,3 @@
 class Todo < ApplicationRecord
-  scope :orderde, -> { order("is_finished, created_at desc")}
+  scope :ordered, -> { order("is_finished, created_at desc")}
 end

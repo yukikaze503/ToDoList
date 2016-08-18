@@ -1,32 +1,4 @@
-<%= form_for(todo) do |f| %>
-  <% if todo.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
-
-      <ul>
-      <% todo.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :title %>
-    <%= f.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= f.label :remark %>
-    <%= f.text_area :remark %>
-  </div>
-
-  <div class="field">
-    <%= f.label :is_finished %>
-    <%= f.check_box :is_finished %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<%= form_for @todo do |f| %>
+  <p> <%= f.text_field :title, class: 'long_txt' %> </p>
+  <p> <%= f.submit "提交", class: 'submit' %> </p>
 <% end %>

@@ -1,10 +1,11 @@
 class TodosController < ApplicationController
-  before_action :set_todo, only: [:show, :edit, :update, :destroy]
+  before_action :load_todo, only: [:edit, :update, :destroy]
 
   # GET /todos
   # GET /todos.json
   def index
-    @todos = Todo.all
+    @todos ||= todo_scope.all
+    build_todo
   end
 
   # GET /todos/1
@@ -12,10 +13,10 @@ class TodosController < ApplicationController
   def show
   end
 
-  # GET /todos/new
-  def new
-    @todo = Todo.new
-  end
+  # # GET /todos/new
+  # def new
+  #   @todo = Todo.new
+  # end
 
   # GET /todos/1/edit
   def edit
@@ -24,14 +25,13 @@ class TodosController < ApplicationController
   # POST /todos
   # POST /todos.json
   def create
-    @todo = Todo.new(todo_params)
-
+    build_todo
     respond_to do |format|
       if @todo.save
-        format.html { redirect_to @todo, notice: 'Todo was successfully created.' }
+        format.html { redirect_to todo_path, notice: 'Todo was successfully created.' }
         format.json { render :show, status: :created, location: @todo }
       else
-        format.html { render :new }
+        format.html { render :index }
         format.json { render json: @todo.errors, status: :unprocessable_entity }
       end
     end
@@ -40,9 +40,10 @@ class TodosController < ApplicationController
   # PATCH/PUT /todos/1
   # PATCH/PUT /todos/1.json
   def update
+    build_todo
     respond_to do |format|
       if @todo.update(todo_params)
-        format.html { redirect_to @todo, notice: 'Todo was successfully updated.' }
+        format.html { redirect_to todo_path, notice: 'Todo was successfully updated.' }
         format.json { render :show, status: :ok, location: @todo }
       else
         format.html { render :edit }
@@ -62,13 +63,25 @@ class TodosController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_todo
-      @todo = Todo.find(params[:id])
+    def load_todo
+      @todo ||= todo_scope.find(params[:id])
+    end
+    
+    def build_todo
+      @todo ||= todo_scope.new
+      @todo.attributes = todo_params
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def todo_params
-      params.require(:todo).permit(:title, :remark, :is_finished)
+    def load_todos
+      @todos ||= todo_scope.all
     end
-end
+
+    def todo_scope
+     Todo.ordered
+    end
+
+    def todo_params
+      todo_params = params[:todo]
+      todo_params ? todo_params.permit(:title, :remark, :is_finished) : {}
+    end
+  end
